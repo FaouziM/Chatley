@@ -23,7 +23,7 @@ public class PersonRepositoryInMemory {
 	
 	public Person getPerson(String naam){
 		Person output = null;
-		output =  this.personen.get(naam);
+		output =  this.personen.get(naam.toLowerCase());
 		if (output == null){
 			throw new DBException("User niet gevonden!");
 		}

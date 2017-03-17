@@ -9,7 +9,7 @@ public class Person {
 	private List<Person> vrienden;
 	
 	public Person(String naam, String wachtwoord, List<Person> vrienden){
-		this.naam = naam;
+		this.naam = naam.toLowerCase();
 		this.wachtwoord = wachtwoord;
 		this.status = "Online";
 	}
@@ -43,11 +43,15 @@ public class Person {
 		return this.status;
 	}
 	
+	public void setStatus(String status){
+		this.status = status;
+	}
+	
 	public boolean equals(Object o){
 		if (!(o instanceof Person)){
 			return false;
 		}
 		Person andere = (Person) o;
-		return (andere.getNaam().equals(this.getNaam()));
+		return (andere.getNaam().equalsIgnoreCase(this.getNaam()));
 	}
 }

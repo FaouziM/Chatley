@@ -38,8 +38,12 @@ public class Controller extends HttpServlet {
 	private void watDoen(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 		String action = request.getParameter("action");
 		if (action==null){
-			loginPage(request, response);
-			return;
+			if (request.getSession().getAttribute("user") != null){
+				request.getRequestDispatcher("index.jsp").forward(request, response);
+				return;
+			}else {
+				action = "loginPage";
+			}
 		}
 		
 		switch (action) {
@@ -55,6 +59,14 @@ public class Controller extends HttpServlet {
 			Person person = (Person) request.getSession().getAttribute("user");
 			String status = person.getStatus();
 			response.getWriter().write(status);
+			break;
+			
+		case "updateStatus":
+			String nieuweStatus = request.getParameter("nieuweStatus");
+			Person user = (Person) request.getSession().getAttribute("user");
+			user.setStatus(nieuweStatus);
+			response.getWriter().write(user.getStatus());
+			break;
 		}
 		
 	}
