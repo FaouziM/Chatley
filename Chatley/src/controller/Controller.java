@@ -37,43 +37,62 @@ public class Controller extends HttpServlet {
 	
 	private void watDoen(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 		String action = request.getParameter("action");
+		Person ik = null;
+		ik = (Person) request.getSession().getAttribute("user");
+		
 		if (action==null){
-			if (request.getSession().getAttribute("user") != null){
 				request.getRequestDispatcher("index.jsp").forward(request, response);
 				return;
-			}else {
-				action = "loginPage";
-			}
 		}
 		
+		
 		switch (action) {
-		case "loginPage":
-			loginPage(request, response);
-			break;
 		
 		case "login":
 			login(request, response);
 			break;
 			
 		case "getStatus":
-			Person person = (Person) request.getSession().getAttribute("user");
-			String status = person.getStatus();
+			String status = ik.getStatus();
 			response.getWriter().write(status);
 			break;
 			
 		case "updateStatus":
 			String nieuweStatus = request.getParameter("nieuweStatus");
-			Person user = (Person) request.getSession().getAttribute("user");
-			user.setStatus(nieuweStatus);
-			response.getWriter().write(user.getStatus());
+			ik.setStatus(nieuweStatus);
+			response.getWriter().write(ik.getStatus());
+			break;
+			
+		case "addVriend":
+			String username = request.getParameter("username");
+			Person vriend = null;
+			try{
+				vriend = service.getPerson(username);
+				ik.addVriend(vriend);
+			}catch (Exception e){
+				response.getWriter().write("{ \"Error\": " + "\"" + e.getMessage() + "\" }");
+				break;
+			}
+			response.getWriter().write(service.getVriendenAlsJSON(ik));
+			break;
+			
+		case "getFriends":
+			response.getWriter().write(service.getVriendenAlsJSON(ik));
+			break;
+		
+		case "getOudeBerichten":
+			Person partner = service.getPerson(request.getParameter("partner"));
+			String json = ik.getBerichtenVanPartnerAlsJSON(partner);
+			response.getWriter().write(json);
+			break;
+			
+		case "getNieuweBerichten":
+			Person partner1 = service.getPerson(request.getParameter("partner"));
+			String nieuweBerichtenJSON = ik.getNieuweBerichtenVanPartnerAlsJSON(partner1);
+			response.getWriter().write(nieuweBerichtenJSON);
 			break;
 		}
 		
-	}
-	
-	private void loginPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
-		request.getRequestDispatcher("login.jsp").forward(request, response);
-		return;
 	}
 	
 	private void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
@@ -86,11 +105,12 @@ public class Controller extends HttpServlet {
 			person = service.getPersonAlsWachtwoordCorrect(username, password);
 		} catch (Exception e) {
 			request.setAttribute("fout", e.getMessage());
-			request.getRequestDispatcher("login.jsp").forward(request, response);
+			request.setAttribute("user", null);
+			request.getRequestDispatcher("index.jsp").forward(request, response);
 			return;
 		}
 		request.getSession().setAttribute("user", person);
-		request.getRequestDispatcher("index.jsp").forward(request, response);
+		response.sendRedirect("Controller");
 		return;
 	}
 	

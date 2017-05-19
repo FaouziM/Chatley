@@ -18,7 +18,7 @@ public class PersonRepositoryInMemory {
 		if (this.personen.containsKey(person.getNaam())){
 			throw new DBException("Deze user bestaat al!");
 		}
-		this.personen.put(person.getNaam(), person);
+		this.personen.put(person.getNaam().toLowerCase(), person);
 	}
 	
 	public Person getPerson(String naam){
@@ -43,7 +43,7 @@ public class PersonRepositoryInMemory {
 	public Person getPersonAlsWachtwoordCorrect(String username, String wachtwoord){
 		Person p = null;
 		try{
-		p = this.getPerson(username);
+		p = this.getPerson(username.toLowerCase());
 		}catch (DBException e){
 			throw new DBException("Usernaam of wachtwoord is verkeerd!");
 		}
