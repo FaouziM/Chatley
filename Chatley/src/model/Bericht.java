@@ -14,7 +14,6 @@ public class Bericht {
 		this.ontvanger = ontvanger;
 		this.datum = new Date();
 	}
-	
 	public Person getZender(){
 		return this.zender;
 	}

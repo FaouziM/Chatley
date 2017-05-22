@@ -7,21 +7,76 @@ import db.MessageRepoInMemory;
 
 public class Person {
 	private String naam;
+	private String voornaam;
+	private String email;
+	private char geslacht;
+	private int leeftijd;
+	
 	private String wachtwoord;
 	private String status;
 	private List<Person> vrienden;
 	private MessageRepoInMemory berichten; //alle berichten die deze persoon heeft verzonden en ontvangen
 
-	public Person(String naam, String wachtwoord, List<Person> vrienden) {
-		this.naam = naam;
-		this.wachtwoord = wachtwoord;
-		this.status = "Online";
-		if (vrienden == null) {
-			this.vrienden = new ArrayList<Person>();
-		} else {
-			this.vrienden = vrienden;
-		}
+	public Person(String naam, String voornaam, String email, char geslacht, int leeftijd, String passwoord, String pass2) {
+		setNaam(naam);
+		setVoornaam(voornaam);
+		setEmail(email);
+		setGeslacht(geslacht);
+		setLeeftijd(leeftijd);
+		setWachtwoord(passwoord, pass2);
 		this.berichten = new MessageRepoInMemory();
+		this.status = "Online";
+		this.vrienden = new ArrayList<Person>();
+	}
+
+	public String getVoornaam() {
+		return voornaam;
+	}
+
+	public void setVoornaam(String voornaam) {
+		this.voornaam = voornaam;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public char getGeslacht() {
+		return geslacht;
+	}
+
+	public void setGeslacht(char geslacht) {
+		this.geslacht = geslacht;
+	}
+
+	public int getLeeftijd() {
+		return leeftijd;
+	}
+
+	public void setLeeftijd(int leeftijd) {
+		this.leeftijd = leeftijd;
+	}
+
+	private String getWachtwoord() {
+		return wachtwoord;
+	}
+
+	public void setWachtwoord(String wachtwoord , String pass2) {
+		if (!wachtwoord.equals(pass2)){
+			throw new IllegalArgumentException("Passwoorden niet gelijk");
+		}
+		this.wachtwoord = wachtwoord;
+	}
+
+	public void setNaam(String naam) {
+		if (naam == null || naam.trim().isEmpty()){
+			throw new IllegalArgumentException("Naam is leeg");
+		}
+		this.naam = naam;
 	}
 
 	public void addBericht(Bericht b){
@@ -36,16 +91,16 @@ public class Person {
 		return this.berichten.getBerichtenVanPartnerAlsJSON(partner);
 	}
 	
-	public String getNieuweBerichtenVanPartnerAlsJSON(Person partner){
-		return this.berichten.getNieuweBerichtenVanPartnerAlsJSON(partner);
+	public String getNieuweBerichtenVanPartnerAlsJSON(Person partner, Person ik){
+		return this.berichten.getNieuweBerichtenVanPartnerAlsJSON(partner, ik);
 	}
 	
 	public String getAlZijnBerichtenAlsJSON(){
 		return this.berichten.getBerichtenAlsJSON();
 	}
 	
-	public String getNaam() {
-		return this.naam;
+	public String getVolledigeNaam() {
+		return this.voornaam + " " + this.naam;
 	}
 
 	public boolean isPassCorrect(String poging) {
@@ -85,6 +140,6 @@ public class Person {
 			return false;
 		}
 		Person andere = (Person) o;
-		return (andere.getNaam().equalsIgnoreCase(this.getNaam()));
+		return (andere.getVolledigeNaam().equalsIgnoreCase(this.getVolledigeNaam()));
 	}
 }

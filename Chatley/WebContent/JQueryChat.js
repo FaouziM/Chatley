@@ -71,7 +71,14 @@ function zendBericht(sendButton, naamPartner) {
     berichtObject.bericht = berichtText;
     berichtObject.ontvanger = naamPartner;
     var berichtObjectJSON = JSON.stringify(berichtObject);
+    //voorbeeld verzonden bericht JSON: {"bericht":"jajajajajajaj","ontvanger":"Bob"}
     console.log(berichtObjectJSON);
+    $.ajax({
+        url: "Controller?action=zendBericht",
+        type: "POST",
+        data: "b=" + berichtObjectJSON, //b= dient om parameter te kunnen aanspreken in servlet
+        dataType: "json"
+    });
 }
 
 function getOudeBerichten(naam) {
@@ -82,7 +89,7 @@ function getOudeBerichten(naam) {
             console.log(json);
             ontvangChatBericht(json, naam);
         }
-    })
+    });
 }
 
 function ontvangChatBericht(json, naamPartner) {
@@ -109,6 +116,10 @@ function addBerichtBijVenster(berichtObject, naamPartner) {
     berichtDiv.className += " berichtDiv";
     berichtDiv.innerHTML = bericht;
     berichtenRuimte.appendChild(berichtDiv);
+
+    $(berichtenRuimte).animate({
+        scrollTop: berichtenRuimte.scrollHeight
+    }, 600);
 }
 
 function startPollingNaarNieuweBerichten() {
@@ -118,12 +129,23 @@ function startPollingNaarNieuweBerichten() {
     }
 }
 
+function ontvangNieuwChatBericht(json, naamPartner) {
+    var tempJsonBerichtObj = JSON.parse(json);
+    if ((tempJsonBerichtObj.Bericht.length != 0)) {
+        if (tempJsonBerichtObj.Bericht[0]["zender"] === naamPartner || tempJsonBerichtObj.Bericht[0]["ontvanger"] === naamPartner) {
+            openChatWindow(naamPartner);
+            ontvangChatBericht(json, naamPartner);
+        }
+    }
+
+}
+
 function pollNaarNieuweBerichten(naamPartner) {
     $.ajax({
         url: "Controller?action=getNieuweBerichten&partner=" + naamPartner,
         type: "GET",
         success: function (json) {
-            ontvangChatBericht(json, naamPartner);
+            ontvangNieuwChatBericht(json, naamPartner);
         }
     });
     setTimeout(function () {

@@ -1,7 +1,9 @@
 <section>
+
     <h2>
-			<c:out value="${user.naam}" />
-		</h2>
+			<c:out value="${user.voornaam}" />
+	</h2>
+		
 </section>
 <section id="status">
     <p>
@@ -26,15 +28,16 @@
         </tbody>
     </table>
 </section>
-
 <br>
 
 <section id="contacttoevoegen">
     <div style="background-color: red; width: 50%; margin: auto;" id="contactError"></div>
     <br>
-    <input type="text" id="contactnaam"></input>
+    <input type="text" placeholder="email van vriend"  name="email"></input>
     <input type="button" id="addContactKnop" value="Voeg toe" />
 </section>
+<br>
+<a href="Controller?action=logout">Uitloggen</a>
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script src="JQueryChat.js"></script>

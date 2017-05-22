@@ -12,10 +12,10 @@
 
         <body id="body">
             <section id="loginOfChat">
-                <c:if test="${user.naam == null}">
+                <c:if test="${user.voornaam == null}">
                     <%@include file="login.jsp"%>
                 </c:if>
-                <c:if test="${user.naam != null}">
+                <c:if test="${user.voornaam != null}">
                     <%@include file="chat.jsp"%>
                 </c:if>
             </section>

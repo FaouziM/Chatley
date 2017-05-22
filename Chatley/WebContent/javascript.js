@@ -79,7 +79,7 @@ function addVriend() {
     var contactnaamveld = document.getElementById("contactnaam");
     var contactnaamtext = contactnaamveld.value;
     contactnaamveld.value = "";
-    var info = "username=" + encodeURIComponent(contactnaamtext);
+    var info = "email=" + encodeURIComponent(contactnaamtext);
     addVriendRequest.open("POST", "Controller?action=addVriend", true);
     addVriendRequest.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     addVriendRequest.send(info);

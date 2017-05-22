@@ -17,28 +17,31 @@ public class ChatleyService {
 	public ChatleyService(){
 		personen = new PersonRepositoryInMemory();
 		
-		Person test1 = new Person("Fao", "t", new ArrayList<Person>());
-		
-		Person bob = new Person("Bob", "t", new ArrayList<Person>());
-		test1.addVriend(bob);
-		this.addPerson(test1);
-		this.addPerson(bob);
-		
-		test1.addOudBericht(new Bericht("hoi", bob, test1));
-		test1.addOudBericht(new Bericht("Hallo, hoe gaat ie?", test1, bob));
-		
-		bob.addOudBericht(new Bericht("hoi", bob, test1));
-		bob.addOudBericht(new Bericht("Hallo, hoe gaat ie?", test1, bob));
-		
-		Person brampi = new Person("Brampi", "t", new ArrayList<Person>());
-		Person yarno = new Person("Yarno", "t", new ArrayList<Person>());
+		Person fao = new Person("M", "Fao", "fao@gmail.com", 'm', 21, "t", "t");
+		Person bob = new Person("Q", "Bob", "bob@gmail.com", 'm', 22, "t", "t");
+		Person brampi = new Person("C", "Brampi", "bram@gmail.com", 'm', 21, "t", "t");
+		Person yarno = new Person("C", "Yarno", "yari@gmail.com", 'm', 20, "t", "t");
 		
 		this.addPerson(yarno);
 		this.addPerson(brampi);
+		this.addPerson(fao);
+		this.addPerson(bob);
+		
+		fao.addVriend(bob);
+		
+		fao.addOudBericht(new Bericht("Well I'm finding it harder to be a gentleman every day.", bob, fao));
+		fao.addOudBericht(new Bericht("Have all the manners that you've been taught slowly died away?", fao, bob));
+		
+		bob.addOudBericht(new Bericht("Well I'm finding it harder to be a gentleman every day.", bob, fao));
+		bob.addOudBericht(new Bericht("Have all the manners that you've been taught slowly died away?", fao, bob));
+		
+		fao.addOudBericht(new Bericht("But if I'd held the door open for you it wouldn't make your day!", bob, fao));
+		bob.addOudBericht(new Bericht("But if I'd held the door open for you it wouldn't make your day!",  bob, fao));
+		
 	}
 	
-	public Person getPerson(String naam){
-		return personen.getPerson(naam);
+	public Person getPerson(String email){
+		return personen.getPerson(email);
 	}
 	
 	public List<Person> getAllePersonenBehalve(Person person){
@@ -49,15 +52,13 @@ public class ChatleyService {
 		personen.addPerson(person);
 	}
 	
-	public Person getPersonAlsWachtwoordCorrect(String username, String wachtwoord){
-		return personen.getPersonAlsWachtwoordCorrect(username, wachtwoord);
+	public Person getPersonAlsWachtwoordCorrect(String email, String wachtwoord){
+		return personen.getPersonAlsWachtwoordCorrect(email, wachtwoord);
 	}
-	
-	
 	
 	public String getVriendenAlsJSON(Person person){
 		StringBuffer json = new StringBuffer();
-		List<Person> vrienden = this.getPerson(person.getNaam()).getVrienden();
+		List<Person> vrienden = this.getPerson(person.getEmail()).getVrienden();
 		Iterator it = vrienden.iterator();
 		json.append("{ \"Person\":[");
 		
@@ -65,7 +66,7 @@ public class ChatleyService {
 			Person vriend = (Person) it.next();
 			
 			json.append("{");
-			json.append("\"naam\": \"" + vriend.getNaam() + "\",");
+			json.append("\"naam\": \"" + vriend.getVolledigeNaam() + "\",");
 			json.append("\"status\": \"" + vriend.getStatus() + "\"" );
 			json.append("}");
 			if (it.hasNext()){
@@ -76,6 +77,17 @@ public class ChatleyService {
 		json.append("}");
 		System.out.println(json.toString());
 		return json.toString();
+	}
+
+	public void addPerson(String naam, String voornaam, String email, char geslacht, int leeftijd, String passwoord,
+			String passwoord2) {
+		Person p = new Person(naam, voornaam, email, geslacht, leeftijd, passwoord, passwoord2);
+		this.personen.addPerson(p);
+		
+	}
+
+	public Person getPersonMetVolledigeNaam(String volNaam) {
+		return this.personen.getPersonMetVolledigeNaam(volNaam);
 	}
 	
 }

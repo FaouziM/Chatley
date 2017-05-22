@@ -6,8 +6,8 @@
 <section id="loginsection">
     <form method="post" action="Controller?action=login">
         <p>
-            <label for="username">Username: </label>
-            <input id="username" name="username" type="text" />
+            <label for="username">Email: </label>
+            <input id="username" name="email" type="text" />
         </p>
         <p>
             <label for="password">Password: </label>
@@ -15,4 +15,6 @@
         </p>
         <input type="submit" />
     </form>
+    
+    <a href="Controller?action=getRegisterPage">Registreren</a>
 </section>

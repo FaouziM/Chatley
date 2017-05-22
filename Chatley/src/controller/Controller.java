@@ -10,6 +10,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONObject;
+
+import com.sun.corba.se.spi.activation.ORBAlreadyRegisteredHelper;
+
+import jdk.nashorn.internal.parser.JSONParser;
+import model.Bericht;
 import model.Person;
 import service.ChatleyService;
 
@@ -64,10 +70,10 @@ public class Controller extends HttpServlet {
 			break;
 			
 		case "addVriend":
-			String username = request.getParameter("username");
+			String email = request.getParameter("email");
 			Person vriend = null;
 			try{
-				vriend = service.getPerson(username);
+				vriend = service.getPerson(email);
 				ik.addVriend(vriend);
 			}catch (Exception e){
 				response.getWriter().write("{ \"Error\": " + "\"" + e.getMessage() + "\" }");
@@ -81,22 +87,60 @@ public class Controller extends HttpServlet {
 			break;
 		
 		case "getOudeBerichten":
-			Person partner = service.getPerson(request.getParameter("partner"));
+			Person partner = service.getPersonMetVolledigeNaam(request.getParameter("partner"));
 			String json = ik.getBerichtenVanPartnerAlsJSON(partner);
 			response.getWriter().write(json);
 			break;
 			
 		case "getNieuweBerichten":
-			Person partner1 = service.getPerson(request.getParameter("partner"));
-			String nieuweBerichtenJSON = ik.getNieuweBerichtenVanPartnerAlsJSON(partner1);
+			Person partner1 = service.getPersonMetVolledigeNaam(request.getParameter("partner"));
+			String nieuweBerichtenJSON = ik.getNieuweBerichtenVanPartnerAlsJSON(partner1, ik);
 			response.getWriter().write(nieuweBerichtenJSON);
+			break;
+			
+		case "zendBericht":
+			String jsonBericht = request.getParameter("b");
+			JSONObject jsonObject = new JSONObject(jsonBericht);
+			Person ontvanger = service.getPersonMetVolledigeNaam((String)jsonObject.get("ontvanger"));
+			Bericht b = new Bericht((String)jsonObject.get("bericht"), ik, ontvanger);
+			ik.addBericht(b);
+			ontvanger.addBericht(b);
+			break;
+			
+		case "logout":
+			request.getSession().invalidate();
+			response.sendRedirect("Controller");
+			break;
+			
+		case "getRegisterPage":
+			request.getRequestDispatcher("registreren.jsp").forward(request, response);
+			break;
+		
+		case "registreren":
+			registreren(request, response);
+			
 			break;
 		}
 		
 	}
 	
+	private void registreren(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		String naam = request.getParameter("naam");
+		String voornaam = request.getParameter("voornaam");
+		String email = request.getParameter("email");
+		char geslacht = request.getParameter("geslacht").charAt(0);
+		int leeftijd = Integer.parseInt(request.getParameter("leeftijd"));
+		String passwoord = request.getParameter("passwoord");
+		String passwoord2 = request.getParameter("passwoord2");
+		try {
+			this.service.addPerson(naam, voornaam, email, geslacht, leeftijd, passwoord, passwoord2);
+		} catch (IllegalArgumentException e){
+			response.sendRedirect("Controller?action=getRegisterPage");
+		}
+	}
+	
 	private void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
-		String username = request.getParameter("username");
+		String username = request.getParameter("email");
 		String password = request.getParameter("password");
 		
 		Person person = null;

@@ -24,18 +24,21 @@ public class MessageRepoInMemory {
 		this.nieuweBerichten.add(b);
 	}
 	
-	public String getNieuweBerichtenVanPartnerAlsJSON(Person partner){
+	public String getNieuweBerichtenVanPartnerAlsJSON(Person partner, Person ik){
+		if (nieuweBerichten.size() == 0){
+			return getBerichtenAlsJSON(new ArrayList<Bericht>());
+		}
 		Iterator it = nieuweBerichten.iterator();
 		List<Bericht> gematchteBerichten = new ArrayList<Bericht>();
 		
 		while (it.hasNext()){
 			Bericht b = (Bericht) it.next();
-			if (b.getZender().equals(partner)){
+			if (b.getZender().equals(partner) || b.getOntvanger().equals(partner)){
 				berichten.add(b);
-				nieuweBerichten.remove(b);
 				gematchteBerichten.add(b);
 			}
 		}
+		nieuweBerichten.removeAll(gematchteBerichten);
 		
 		return getBerichtenAlsJSON(gematchteBerichten);
 	}
@@ -73,8 +76,8 @@ public class MessageRepoInMemory {
 			Bericht b = (Bericht) it.next();
 			
 			json.append("{");
-			json.append("\"zender\": \"" + b.getZender().getNaam() + "\",");
-			json.append("\"ontvanger\": \"" + b.getOntvanger().getNaam() + "\"," );
+			json.append("\"zender\": \"" + b.getZender().getVolledigeNaam() + "\",");
+			json.append("\"ontvanger\": \"" + b.getOntvanger().getVolledigeNaam() + "\"," );
 			json.append("\"bericht\": \"" + b.getBericht() + "\"" );
 			json.append("}");
 			if (it.hasNext()){
