@@ -1,7 +1,9 @@
 $(document).ready(function () {
     maakNamenClickable();
     setTimeout(function () {
-        startPollingNaarNieuweBerichten();
+        setInterval(function () {
+            startPollingNaarNieuweBerichten();
+        }, 1000);
     }, 3000);
 });
 
@@ -125,9 +127,34 @@ function addBerichtBijVenster(berichtObject, naamPartner) {
 function startPollingNaarNieuweBerichten() {
     var contactLijstNamen = document.getElementById("contactTableBody").getElementsByClassName("persoonNaam");
     for (var i = 0; i < contactLijstNamen.length; i++) {
-        pollNaarNieuweBerichten(contactLijstNamen[i].innerHTML);
+        var naamPartner = contactLijstNamen[i].innerHTML;
+        pollVoorNieuwBericht(naamPartner);
     }
 }
+
+function pollVoorNieuwBericht(naamPartner) {
+    $.ajax({
+        url: "Controller?action=getNieuweBerichten&partner=" + naamPartner,
+        type: "GET",
+        success: function (json) {
+            ontvangNieuwChatBericht(json, naamPartner);
+        }
+    });
+}
+
+/*function pollNaarNieuweBerichten(naamPartner, nummer) {
+    clearTimeout(timeout[nummer]);
+    $.ajax({
+        url: "Controller?action=getNieuweBerichten&partner=" + naamPartner,
+        type: "GET",
+        success: function (json) {
+            ontvangNieuwChatBericht(json, naamPartner);
+        }
+    });
+    timeout[nummer] = setTimeout(function () {
+        pollNaarNieuweBerichten(naamPartner, nummer);
+    }, 2000);
+}*/
 
 function ontvangNieuwChatBericht(json, naamPartner) {
     var tempJsonBerichtObj = JSON.parse(json);
@@ -139,20 +166,6 @@ function ontvangNieuwChatBericht(json, naamPartner) {
     }
 
 }
-
-function pollNaarNieuweBerichten(naamPartner) {
-    $.ajax({
-        url: "Controller?action=getNieuweBerichten&partner=" + naamPartner,
-        type: "GET",
-        success: function (json) {
-            ontvangNieuwChatBericht(json, naamPartner);
-        }
-    });
-    setTimeout(function () {
-        pollNaarNieuweBerichten(naamPartner);
-    }, 2000);
-}
-
 
 function isErAlEenChatWindow(naam) {
     var chatWindows = document.getElementsByClassName("chatWindow");

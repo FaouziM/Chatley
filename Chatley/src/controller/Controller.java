@@ -12,9 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 
-import com.sun.corba.se.spi.activation.ORBAlreadyRegisteredHelper;
-
-import jdk.nashorn.internal.parser.JSONParser;
 import model.Bericht;
 import model.Person;
 import service.ChatleyService;
@@ -70,7 +67,7 @@ public class Controller extends HttpServlet {
 			break;
 			
 		case "addVriend":
-			String email = request.getParameter("email");
+			String email = request.getParameter("email").toLowerCase();
 			Person vriend = null;
 			try{
 				vriend = service.getPerson(email);
@@ -94,7 +91,13 @@ public class Controller extends HttpServlet {
 			
 		case "getNieuweBerichten":
 			Person partner1 = service.getPersonMetVolledigeNaam(request.getParameter("partner"));
-			String nieuweBerichtenJSON = ik.getNieuweBerichtenVanPartnerAlsJSON(partner1, ik);
+			String nieuweBerichtenJSON = null;
+			try{
+			nieuweBerichtenJSON = ik.getNieuweBerichtenVanPartnerAlsJSON(partner1, ik);
+			}catch (NullPointerException e){
+				System.out.println("Nullpointer, waarschijnlijk omdat deze dude geen sessie heeft..");
+				response.sendRedirect("Controller");
+			}
 			response.getWriter().write(nieuweBerichtenJSON);
 			break;
 			

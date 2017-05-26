@@ -76,7 +76,7 @@ function getStatusData() {
 
 function addVriend() {
     document.getElementById("contactError").value = "";
-    var contactnaamveld = document.getElementById("contactnaam");
+    var contactnaamveld = document.getElementById("contactEmail");
     var contactnaamtext = contactnaamveld.value;
     contactnaamveld.value = "";
     var info = "email=" + encodeURIComponent(contactnaamtext);

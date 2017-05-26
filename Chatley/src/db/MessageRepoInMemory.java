@@ -86,7 +86,7 @@ public class MessageRepoInMemory {
 		}
 		json.append("]");
 		json.append("}");
-		System.out.println(json.toString());
+	//	System.out.println(json.toString());
 		
 		return json.toString();
 	}

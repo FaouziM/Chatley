@@ -33,7 +33,7 @@
 <section id="contacttoevoegen">
     <div style="background-color: red; width: 50%; margin: auto;" id="contactError"></div>
     <br>
-    <input type="text" placeholder="email van vriend"  name="email"></input>
+    <input type="text" placeholder="email van vriend"  id="contactEmail"></input>
     <input type="button" id="addContactKnop" value="Voeg toe" />
 </section>
 <br>

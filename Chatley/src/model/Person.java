@@ -92,7 +92,9 @@ public class Person {
 	}
 	
 	public String getNieuweBerichtenVanPartnerAlsJSON(Person partner, Person ik){
-		return this.berichten.getNieuweBerichtenVanPartnerAlsJSON(partner, ik);
+		String output = this.berichten.getNieuweBerichtenVanPartnerAlsJSON(partner, ik);
+		System.out.println("Get Nbericht van : " + partner.getVolledigeNaam() + " " + output);
+		return output; 
 	}
 	
 	public String getAlZijnBerichtenAlsJSON(){
@@ -140,6 +142,6 @@ public class Person {
 			return false;
 		}
 		Person andere = (Person) o;
-		return (andere.getVolledigeNaam().equalsIgnoreCase(this.getVolledigeNaam()));
+		return (andere.getEmail().equalsIgnoreCase(this.getEmail()));
 	}
 }

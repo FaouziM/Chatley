@@ -19,8 +19,8 @@ public class ChatleyService {
 		
 		Person fao = new Person("M", "Fao", "fao@gmail.com", 'm', 21, "t", "t");
 		Person bob = new Person("Q", "Bob", "bob@gmail.com", 'm', 22, "t", "t");
-		Person brampi = new Person("C", "Brampi", "bram@gmail.com", 'm', 21, "t", "t");
-		Person yarno = new Person("C", "Yarno", "yari@gmail.com", 'm', 20, "t", "t");
+		Person brampi = new Person("C", "Brampi", "brampi@gmail.com", 'm', 21, "t", "t");
+		Person yarno = new Person("C", "Yarno", "yarno@gmail.com", 'm', 20, "t", "t");
 		
 		this.addPerson(yarno);
 		this.addPerson(brampi);
@@ -41,7 +41,7 @@ public class ChatleyService {
 	}
 	
 	public Person getPerson(String email){
-		return personen.getPerson(email);
+		return personen.getPerson(email.toLowerCase());
 	}
 	
 	public List<Person> getAllePersonenBehalve(Person person){
@@ -81,7 +81,7 @@ public class ChatleyService {
 
 	public void addPerson(String naam, String voornaam, String email, char geslacht, int leeftijd, String passwoord,
 			String passwoord2) {
-		Person p = new Person(naam, voornaam, email, geslacht, leeftijd, passwoord, passwoord2);
+		Person p = new Person(naam, voornaam, email.toLowerCase(), geslacht, leeftijd, passwoord, passwoord2);
 		this.personen.addPerson(p);
 		
 	}
